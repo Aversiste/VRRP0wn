@@ -63,7 +63,7 @@ class vrrp ():
 
 		self.content = Ether (src = "00:00:5e:00:01:" + hex (vrrpParams['vrid']), dst = "01:00:5e:00:00:12", type = 0x0800)
 		self.content = self.content / IP (src = srcIp, dst="224.0.0.18", proto = 0x70, ttl = 255)
-		self.content = self.content / VRRP (version = vrrpParams['version'], type = 0x001, vrid = vrrpParams['vrid'], priority = 250, ipcount = nbrIp, authtype = 0, adv = vrrpParams['adv'], addrlist = vrrpParams['addrlist'])
+		self.content = self.content / VRRP (version = vrrpParams['version'], type = 0x001, vrid = vrrpParams['vrid'], priority = 250, ipcount = nbrIp, authtype = vrrpParams['authtype'], adv = vrrpParams['adv'], addrlist = vrrpParams['addrlist'], auth1 = vrrpParams['auth1'], auth2 = vrrpParams['auth2'])
 
 	def send (self, interface):
 		sendp (self.content, iface = interface, verbose = False)
@@ -219,6 +219,7 @@ for frame in capturedFrames:
 	curFrame['addrlist'] = frame[VRRP].addrlist
 	curFrame['auth1'] = frame[VRRP].auth1
 	curFrame['auth2'] = frame[VRRP].auth2
+	curFrame['authtype'] = frame[VRRP].authtype
 
 	# Create a vrrp instance from curent VRRP configuration
 	curVrrpObj = vrrp (sourceIp, curFrame)
